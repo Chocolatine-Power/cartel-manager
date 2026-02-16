@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartel Finance Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg-primary: #0a0e27;
+            --color-bg-secondary: #1a1f3a;
+            --color-bg-tertiary: #2d3555;
+            --color-accent-primary: #dc2626;
+            --color-accent-secondary: #f59e0b;
+            --color-text-primary: #f1f5f9;
+            --color-text-secondary: #cbd5e1;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+            border-left: 5px solid var(--color-accent-primary);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: var(--color-accent-primary);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid var(--color-accent-secondary);
+            padding-bottom: 10px;
+        }
+
+        .nav-tab {
+            background: var(--color-bg-tertiary);
+            border: 2px solid var(--color-text-secondary);
+            color: var(--color-text-primary);
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .nav-tab.active {
+            background: var(--color-accent-primary);
+            border-color: var(--color-accent-primary);
+            color: white;
+        }
+
+        .nav-tab:hover {
+            background: var(--color-accent-secondary);
+            border-color: var(--color-accent-secondary);
+        }
+
+        .content-section {
+            display: none;
+            background: var(--color-bg-secondary);
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--color-bg-tertiary);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--color-accent-secondary);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--color-bg-primary);
+            border: 2px solid var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--color-accent-primary);
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+        }
+
+        button {
+            background: var(--color-accent-primary);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: var(--color-accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        button.secondary {
+            background: var(--color-bg-tertiary);
+            border: 2px solid var(--color-accent-secondary);
+        }
+
+        button.secondary:hover {
+            background: var(--color-accent-secondary);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: var(--color-bg-tertiary);
+            color: var(--color-accent-secondary);
+            padding: 15px;
+            text-align: left;
+            border-bottom: 3px solid var(--color-accent-primary);
+            font-weight: bold;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--color-bg-tertiary);
+        }
+
+        tr:hover {
+            background: var(--color-bg-tertiary);
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--color-bg-tertiary) 0%, var(--color-bg-secondary) 100%);
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 5px solid var(--color-accent-primary);
+            margin-bottom: 20px;
+        }
+
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--color-accent-secondary);
+        }
+
+        .positive {
+            color: var(--color-success);
+        }
+
+        .negative {
+            color: var(--color-danger);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .delete-btn {
+            background: var(--color-danger);
+        }
+
+        .delete-btn:hover {
+            background: #dc2626;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .info-box {
+            background: rgba(79, 70, 229, 0.1);
+            border-left: 4px solid #4f46e5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: var(--color-text-secondary);
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            color: var(--color-success);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .nav-tabs {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PAGE LOGIN -->
+    <div id="loginPage" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--color-bg-primary);">
+        <div style="background: var(--color-bg-secondary); padding: 40px; border-radius: 10px; border: 2px solid var(--color-accent-primary); max-width: 400px; width: 90%;">
+            <h1 style="text-align: center; color: var(--color-accent-primary); margin-bottom: 30px;">🔴 CARTEL LOGIN 🔴</h1>
+            
+            <div class="form-group">
+                <label>Identifiant</label>
+                <input type="text" id="loginUsername" placeholder="Ex: DiegoAdm" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Mot de Passe</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            
+            <button style="width: 100%; margin-bottom: 10px;" onclick="handleLogin()">🔓 Connexion</button>
+            <button class="secondary" style="width: 100%; margin-bottom: 10px;" onclick="resetAccount()">🔧 Réinitialiser Compte</button>
+            <button class="secondary" style="width: 100%;" onclick="initializeAccounts()">⚙️ Initialiser les comptes</button>
+            
+            <div id="loginError" style="color: var(--color-danger); margin-top: 15px; text-align: center; display: none;"></div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: rgba(79, 70, 229, 0.1); border-left: 4px solid #4f46e5; border-radius: 5px; font-size: 0.9em; color: var(--color-text-secondary);">
+                <strong>📋 Comptes de Test :</strong><br>
+                🔴 DiegoAdm / Admin2024!<br>
+                📊 Diego / Comptable2024!<br>
+                👔 Chef / Chef2024!<br>
+                🔧 Second / Second2024!<br>
+                👷 Operateur / Operateur2024!
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE APP -->
+    <div id="appPage" style="display: none;">
+        <div class="container">
+            <header>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1>🔴 CARTEL FINANCE MANAGER 🔴</h1>
+                        <p style="color: var(--color-text-secondary); margin-top: 10px;">Comptabilité du Cartel Colombien</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="color: var(--color-accent-secondary); font-weight: bold; margin-bottom: 10px;">👤 <span id="currentUser">-</span> (<span id="currentRole">-</span>)</div>
+                        <button class="secondary" onclick="handleLogout()" style="padding: 8px 15px; font-size: 0.9em;">🚪 Déconnexion</button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="nav-tabs">
+            <div class="nav-tab active" onclick="switchTab('dashboard')">💰 Tableau de Bord</div>
+            <div class="nav-tab" onclick="switchTab('journal')">📝 Journal des Transactions</div>
+            <div class="nav-tab" onclick="switchTab('blanchiment')">💳 Blanchiment</div>
+            <div class="nav-tab" onclick="switchTab('armes')">🔫 Inventaire Armes</div>
+            <div class="nav-tab" onclick="switchTab('contacts')">📞 Annuaire</div>
+        </div>
+
+        <!-- TABLEAU DE BORD -->
+        <div id="dashboard" class="content-section active">
+            <h2 style="margin-bottom: 30px; color: var(--color-accent-secondary);">📊 Tableau de Bord Financier</h2>
+            
+            <div class="grid-2">
+                <div class="stat-box">
+                    <div class="stat-label">Caisse Courante (CC)</div>
+                    <div class="stat-value" id="saldoCC">$0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Caisse Noire (CN)</div>
+                    <div class="stat-value" id="saldoCN">$0</div>
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">Solde Total</div>
+                <div class="stat-value" id="saldoTotal">$0</div>
+            </div>
+
+            <h3 style="margin-top: 30px; margin-bottom: 20px; color: var(--color-accent-secondary);">Blanchiment par Groupe (Top 5)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Groupe</th>
+                        <th>Opérations</th>
+                        <th>Total Confié</th>
+                        <th>Total Rendu</th>
+                        <th>Gain</th>
+                    </tr>
+                </thead>
+                <tbody id="topGroupsTable">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--color-text-secondary);">Aucune donnée de blanchiment</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin-top: 30px; margin-bottom: 20px; color: var(--color-accent-secondary);">Dernières Transactions (5 dernières)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Opérateur</th>
+                        <th>Raison</th>
+                        <th>Montant</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="lastTransactionsTable">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--color-text-secondary);">Aucune transaction</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- JOURNAL DES TRANSACTIONS -->
+        <div id="journal" class="content-section">
+            <h2 style="margin-bottom: 30px; color: var(--color-accent-secondary);">📝 Journal des Transactions</h2>
+            
+            <div class="info-box">
+                💡 Enregistrez toutes les entrées/sorties d'argent du cartel (achats, ventes, salaires, etc.)
+            </div>
+
+            <form onsubmit="addTransaction(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Opérateur</label>
+                        <input type="text" id="txOperateur" placeholder="Ex: Alejandro" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="txDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Raison</label>
+                    <textarea id="txRaison" placeholder="Ex: Vente armes BBF (3 Berretas + 300 munitions)" required></textarea>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Montant</label>
+                        <input type="number" id="txMontant" placeholder="Ex: 15000" step="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="txType" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="entree">Entrée (+)</option>
+                            <option value="sortie">Sortie (-)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit">✅ Enregistrer Transaction</button>
+            </form>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px; color: var(--color-accent-secondary);">Historique (Dernières 20)</h3>
+            <div class="filter-group">
+                <input type="text" id="journalFilter" placeholder="Rechercher par opérateur ou raison..." onkeyup="filterJournal()">
+                <input type="date" id="journalDateFilter" onchange="filterJournal()">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Opérateur</th>
+                        <th>Raison</th>
+                        <th>Montant</th>
+                        <th>Type</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="journalTable">
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--color-text-secondary);">Aucune transaction enregistrée</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- BLANCHIMENT -->
+        <div id="blanchiment" class="content-section">
+            <h2 style="margin-bottom: 30px; color: var(--color-accent-secondary);">💳 Gestion du Blanchiment</h2>
+            
+            <div class="info-box">
+                💡 Enregistrez les opérations de blanchiment avec un groupe allié (calcul auto du gain)
+            </div>
+
+            <form onsubmit="addBlanchiment(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Groupe</label>
+                        <input type="text" id="blGroupe" placeholder="Ex: BBF, Vagos, CBR" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="blDate" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Montant Confié ($)</label>
+                        <input type="number" id="blMontant" placeholder="Ex: 500000" step="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Taux de Blanchiment (%)</label>
+                        <input type="number" id="blTaux" placeholder="Ex: 30" min="0" max="100" step="5" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>% CN sur Gain (Caisse Noire)</label>
+                    <input type="number" id="blCN" placeholder="Ex: 20" min="0" max="100" step="5" value="0">
+                </div>
+
+                <button type="submit">✅ Enregistrer Blanchiment</button>
+            </form>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px; color: var(--color-accent-secondary);">Opérations de Blanchiment (Dernières 20)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Groupe</th>
+                        <th>Montant Confié</th>
+                        <th>Taux</th>
+                        <th>Retour Groupe</th>
+                        <th>Gain</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="blanchimentTable">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--color-text-secondary);">Aucune opération enregistrée</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- INVENTAIRE ARMES -->
+        <div id="armes" class="content-section">
+            <h2 style="margin-bottom: 30px; color: var(--color-accent-secondary);">🔫 Inventaire des Armes</h2>
+            
+            <div class="info-box">
+                💡 Suivez l'inventaire des armes avec prix d'achat/vente et bénéfice
+            </div>
+
+            <form onsubmit="addArme(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Nom Arme</label>
+                        <input type="text" id="armeName" placeholder="Ex: Beretta" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Numéro de Série</label>
+                        <input type="text" id="armeSerie" placeholder="Ex: 659572GCP422563" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Prix d'Achat ($)</label>
+                        <input type="number" id="armeAchat" placeholder="Ex: 14000" step="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Prix de Vente ($)</label>
+                        <input type="number" id="armeVente" placeholder="Ex: 21000" step="100" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Propriétaire / Groupe</label>
+                        <input type="text" id="armeProprietaire" placeholder="Ex: Raven Skulls" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Statut</label>
+                        <select id="armeStatut" required>
+                            <option value="">-- Sélectionner --</option>
+                            <option value="stock">En Stock</option>
+                            <option value="vendu">Vendu</option>
+                            <option value="perdu">Perdu</option>
+                            <option value="alloue">Alloué</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="armeNotes" placeholder="Observations..."></textarea>
+                </div>
+
+                <button type="submit">✅ Ajouter Arme</button>
+            </form>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px; color: var(--color-accent-secondary);">Inventaire (Dernier 30)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Arme</th>
+                        <th>N° Série</th>
+                        <th>Achat</th>
+                        <th>Vente</th>
+                        <th>Bénéfice</th>
+                        <th>Propriétaire</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="armesTable">
+                    <tr>
+                        <td colspan="8" style="text-align: center; color: var(--color-text-secondary);">Aucune arme enregistrée</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ANNUAIRE -->
+        <div id="contacts" class="content-section">
+            <h2 style="margin-bottom: 30px; color: var(--color-accent-secondary);">📞 Annuaire du Cartel</h2>
+            
+            <div class="info-box">
+                💡 Maintenez un registre des contacts importants (alliés, fournisseurs, etc.)
+            </div>
+
+            <form onsubmit="addContact(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Nom Prénom</label>
+                        <input type="text" id="contactNom" placeholder="Ex: Alejandro" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="text" id="contactTel" placeholder="Ex: 555123456" required>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Organisation</label>
+                        <input type="text" id="contactOrg" placeholder="Ex: BBF, CBR, Vagos">
+                    </div>
+                    <div class="form-group">
+                        <label>Poste / Titre</label>
+                        <input type="text" id="contactPoste" placeholder="Ex: Chef, Trésorier, Fournisseur">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="contactNotes" placeholder="Observations importantes..."></textarea>
+                </div>
+
+                <button type="submit">✅ Ajouter Contact</button>
+            </form>
+
+            <h3 style="margin-top: 40px; margin-bottom: 20px; color: var(--color-accent-secondary);">Contacts Enregistrés</h3>
+            <div class="filter-group">
+                <input type="text" id="contactFilter" placeholder="Rechercher par nom, org ou poste..." onkeyup="filterContacts()">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Téléphone</th>
+                        <th>Organisation</th>
+                        <th>Poste</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="contactsTable">
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--color-text-secondary);">Aucun contact enregistré</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUTHENTIFICATION =====
+        const ACCOUNTS = {
+            'DiegoAdm': { password: 'Admin2024!', role: 'admin' },
+            'Diego': { password: 'Comptable2024!', role: 'comptable' },
+            'Chef': { password: 'Chef2024!', role: 'chef' },
+            'Second': { password: 'Second2024!', role: 'second' },
+            'Operateur': { password: 'Operateur2024!', role: 'operateur' }
+        };
+
+        let currentUser = null;
+        let currentRole = null;
+
+        // Permissions par rôle
+        const PERMISSIONS = {
+            'admin': {
+                viewDashboard: true, viewJournal: true, viewBlanchiment: true, viewArmes: true, viewContacts: true,
+                addTransaction: true, editTransaction: true, deleteTransaction: true,
+                addBlanchiment: true, editBlanchiment: true, deleteBlanchiment: true,
+                addArme: true, editArme: true, deleteArme: true,
+                addContact: true, editContact: true, deleteContact: true,
+                viewLogs: true, resetDB: true
+            },
+            'comptable': {
+                viewDashboard: true, viewJournal: true, viewBlanchiment: true, viewArmes: true, viewContacts: true,
+                addTransaction: true, editTransaction: true, deleteTransaction: false,
+                addBlanchiment: true, editBlanchiment: true, deleteBlanchiment: false,
+                addArme: true, editArme: true, deleteArme: false,
+                addContact: true, editContact: true, deleteContact: false,
+                viewLogs: true, resetDB: false
+            },
+            'chef': {
+                viewDashboard: true, viewJournal: true, viewBlanchiment: true, viewArmes: false, viewContacts: false,
+                addTransaction: true, editTransaction: true, deleteTransaction: false,
+                addBlanchiment: true, editBlanchiment: true, deleteBlanchiment: false,
+                addArme: false, editArme: false, deleteArme: false,
+                addContact: false, editContact: false, deleteContact: false,
+                viewLogs: false, resetDB: false
+            },
+            'second': {
+                viewDashboard: true, viewJournal: true, viewBlanchiment: false, viewArmes: false, viewContacts: false,
+                addTransaction: true, editTransaction: true, deleteTransaction: false,
+                addBlanchiment: false, editBlanchiment: false, deleteBlanchiment: false,
+                addArme: false, editArme: false, deleteArme: false,
+                addContact: false, editContact: false, deleteContact: false,
+                viewLogs: false, resetDB: false
+            },
+            'operateur': {
+                viewDashboard: true, viewJournal: true, viewBlanchiment: false, viewArmes: false, viewContacts: false,
+                addTransaction: true, editTransaction: false, deleteTransaction: false,
+                addBlanchiment: false, editBlanchiment: false, deleteBlanchiment: false,
+                addArme: false, editArme: false, deleteArme: false,
+                addContact: false, editContact: false, deleteContact: false,
+                viewLogs: false, resetDB: false
+            }
+        };
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (!ACCOUNTS[username]) {
+                errorDiv.textContent = '❌ Identifiant incorrect';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (ACCOUNTS[username].password !== password) {
+                errorDiv.textContent = '❌ Mot de passe incorrect';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            currentUser = username;
+            currentRole = ACCOUNTS[username].role;
+            localStorage.setItem('currentUser', currentUser);
+            localStorage.setItem('currentRole', currentRole);
+
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('appPage').style.display = 'block';
+            document.getElementById('currentUser').textContent = currentUser;
+            document.getElementById('currentRole').textContent = currentRole.toUpperCase();
+
+            updatePermissions();
+            updateDashboard();
+        }
+
+        function handleLogout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                currentUser = null;
+                currentRole = null;
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('currentRole');
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('appPage').style.display = 'none';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        function initializeAccounts() {
+            if (confirm('Initialiser tous les comptes de test ? Cela réinitialisera aussi les données.')) {
+                localStorage.clear();
+                alert('✅ Comptes initialisés ! Connecte-toi maintenant.');
+                location.reload();
+            }
+        }
+
+        function resetAccount() {
+            const username = prompt('Quel identifiant tu veux réinitialiser ?');
+            if (!username) return;
+
+            if (!ACCOUNTS[username]) {
+                alert('❌ Identifiant inexistant');
+                return;
+            }
+
+            const newPassword = prompt('Nouveau mot de passe :');
+            if (!newPassword) return;
+
+            ACCOUNTS[username].password = newPassword;
+            alert(`✅ Mot de passe de ${username} réinitialisé à : ${newPassword}`);
+        }
+
+        function updatePermissions() {
+            const perms = PERMISSIONS[currentRole];
+            
+            // Masquer/afficher les onglets selon permissions
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                const isHidden = (tab.innerHTML.includes('Blanchiment') && !perms.viewBlanchiment) ||
+                                (tab.innerHTML.includes('Inventaire') && !perms.viewArmes) ||
+                                (tab.innerHTML.includes('Annuaire') && !perms.viewContacts);
+                tab.style.display = isHidden ? 'none' : 'block';
+            });
+
+            // Masquer les boutons selon permissions
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                if (!canDeleteTransaction() && !canDeleteBlanchiment() && !canDeleteArme() && !canDeleteContact()) {
+                    btn.style.display = 'none';
+                }
+            });
+        }
+
+        function can(permission) {
+            return PERMISSIONS[currentRole][permission];
+        }
+
+        function canDeleteTransaction() { return can('deleteTransaction'); }
+        function canDeleteBlanchiment() { return can('deleteBlanchiment'); }
+        function canDeleteArme() { return can('deleteArme'); }
+        function canDeleteContact() { return can('deleteContact'); }
+
+        // ===== DONNÉES =====
+        const STORAGE_KEYS = {
+            transactions: 'cartel_transactions',
+            blanchiment: 'cartel_blanchiment',
+            armes: 'cartel_armes',
+            contacts: 'cartel_contacts'
+        };
+
+        // Vérifier si l'utilisateur est connecté au chargement
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedRole = localStorage.getItem('currentRole');
+            if (savedUser && savedRole) {
+                currentUser = savedUser;
+                currentRole = savedRole;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('appPage').style.display = 'block';
+                document.getElementById('currentUser').textContent = currentUser;
+                document.getElementById('currentRole').textContent = currentRole.toUpperCase();
+                updatePermissions();
+                updateDashboard();
+            } else {
+                document.getElementById('loginPage').style.display = 'flex';
+                document.getElementById('appPage').style.display = 'none';
+            }
+            
+            // Initialiser les dates
+            if (document.getElementById('txDate')) document.getElementById('txDate').valueAsDate = new Date();
+            if (document.getElementById('blDate')) document.getElementById('blDate').valueAsDate = new Date();
+        });
+
+        function switchTab(tabName) {
+            // Vérifier les permissions
+            if (tabName === 'blanchiment' && !can('viewBlanchiment')) {
+                alert('❌ Accès non autorisé');
+                return;
+            }
+            if (tabName === 'armes' && !can('viewArmes')) {
+                alert('❌ Accès non autorisé');
+                return;
+            }
+            if (tabName === 'contacts' && !can('viewContacts')) {
+                alert('❌ Accès non autorisé');
+                return;
+            }
+
+            document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'dashboard') {
+                updateDashboard();
+            }
+        }
+
+        function getFromStorage(key) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveToStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function addTransaction(event) {
+            event.preventDefault();
+            if (!can('addTransaction')) {
+                alert('❌ Vous n\'avez pas la permission d\'ajouter une transaction');
+                return;
+            }
+            const transaction = {
+                id: Date.now(),
+                date: document.getElementById('txDate').value,
+                operateur: document.getElementById('txOperateur').value,
+                raison: document.getElementById('txRaison').value,
+                montant: parseFloat(document.getElementById('txMontant').value),
+                type: document.getElementById('txType').value,
+                createdBy: currentUser,
+                createdAt: new Date().toISOString()
+            };
+
+            const transactions = getFromStorage(STORAGE_KEYS.transactions);
+            transactions.push(transaction);
+            saveToStorage(STORAGE_KEYS.transactions, transactions);
+
+            event.target.reset();
+            document.getElementById('txDate').valueAsDate = new Date();
+            updateDashboard();
+            renderJournal();
+            alert('✅ Transaction enregistrée !');
+        }
+
+        function addTransaction(event) {
+            event.preventDefault();
+            if (!can('addTransaction')) {
+                alert('❌ Vous n\'avez pas la permission d\'ajouter une transaction');
+                return;
+            }
+            const transaction = {
+                id: Date.now(),
+                date: document.getElementById('txDate').value,
+                operateur: document.getElementById('txOperateur').value,
+                raison: document.getElementById('txRaison').value,
+                montant: parseFloat(document.getElementById('txMontant').value),
+                type: document.getElementById('txType').value
+            };
+
+            const transactions = getFromStorage(STORAGE_KEYS.transactions);
+            transactions.push(transaction);
+            saveToStorage(STORAGE_KEYS.transactions, transactions);
+
+            event.target.reset();
+            document.getElementById('txDate').valueAsDate = new Date();
+            updateDashboard();
+            renderJournal();
+            alert('✅ Transaction enregistrée !');
+        }
+
+        function deleteTransaction(id) {
+            if (!can('deleteTransaction')) {
+                alert('❌ Vous n\'avez pas la permission de supprimer une transaction');
+                return;
+            }
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette transaction ?')) {
+                let transactions = getFromStorage(STORAGE_KEYS.transactions);
+                transactions = transactions.filter(t => t.id !== id);
+                saveToStorage(STORAGE_KEYS.transactions, transactions);
+                updateDashboard();
+                renderJournal();
+            }
+        }
+
+        function renderJournal() {
+            const transactions = getFromStorage(STORAGE_KEYS.transactions).sort((a, b) => new Date(b.date) - new Date(a.date));
+            const tbody = document.getElementById('journalTable');
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--color-text-secondary);">Aucune transaction</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = transactions.slice(0, 20).map(t => `
+                <tr>
+                    <td>${t.date}</td>
+                    <td>${t.operateur}</td>
+                    <td>${t.raison}</td>
+                    <td class="${t.type === 'entree' ? 'positive' : 'negative'}">
+                        ${t.type === 'entree' ? '+' : '-'}$${t.montant.toLocaleString('fr-FR')}
+                    </td>
+                    <td>${t.type === 'entree' ? '📥 Entrée' : '📤 Sortie'}</td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="deleteTransaction(${t.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterJournal() {
+            const searchText = document.getElementById('journalFilter').value.toLowerCase();
+            const dateFilter = document.getElementById('journalDateFilter').value;
+            const transactions = getFromStorage(STORAGE_KEYS.transactions);
+            
+            const filtered = transactions.filter(t => {
+                const matchText = t.operateur.toLowerCase().includes(searchText) || t.raison.toLowerCase().includes(searchText);
+                const matchDate = !dateFilter || t.date === dateFilter;
+                return matchText && matchDate;
+            });
+
+            const tbody = document.getElementById('journalTable');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--color-text-secondary);">Aucun résultat</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(t => `
+                <tr>
+                    <td>${t.date}</td>
+                    <td>${t.operateur}</td>
+                    <td>${t.raison}</td>
+                    <td class="${t.type === 'entree' ? 'positive' : 'negative'}">
+                        ${t.type === 'entree' ? '+' : '-'}$${t.montant.toLocaleString('fr-FR')}
+                    </td>
+                    <td>${t.type === 'entree' ? '📥 Entrée' : '📤 Sortie'}</td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="deleteTransaction(${t.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addBlanchiment(event) {
+            event.preventDefault();
+            if (!can('addBlanchiment')) {
+                alert('❌ Vous n\'avez pas la permission d\'ajouter un blanchiment');
+                return;
+            }
+            const montant = parseFloat(document.getElementById('blMontant').value);
+            const taux = parseFloat(document.getElementById('blTaux').value) / 100;
+            const pourcentCN = parseFloat(document.getElementById('blCN').value) / 100;
+
+            const retourGroupe = montant * taux;
+            const gain = montant - retourGroupe;
+            const gainCN = gain * pourcentCN;
+            const gainCC = gain - gainCN;
+
+            const blanchiment = {
+                id: Date.now(),
+                date: document.getElementById('blDate').value,
+                groupe: document.getElementById('blGroupe').value,
+                montant: montant,
+                taux: parseFloat(document.getElementById('blTaux').value),
+                retourGroupe: retourGroupe,
+                gain: gain,
+                gainCC: gainCC,
+                gainCN: gainCN
+            };
+
+            const blanchiments = getFromStorage(STORAGE_KEYS.blanchiment);
+            blanchiments.push(blanchiment);
+            saveToStorage(STORAGE_KEYS.blanchiment, blanchiments);
+
+            event.target.reset();
+            document.getElementById('blDate').valueAsDate = new Date();
+            updateDashboard();
+            renderBlanchiment();
+            alert('✅ Blanchiment enregistré !');
+        }
+
+        function renderBlanchiment() {
+            const blanchiments = getFromStorage(STORAGE_KEYS.blanchiment).sort((a, b) => new Date(b.date) - new Date(a.date));
+            const tbody = document.getElementById('blanchimentTable');
+            
+            if (blanchiments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--color-text-secondary);">Aucune opération</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = blanchiments.slice(0, 20).map(b => `
+                <tr>
+                    <td>${b.date}</td>
+                    <td><strong>${b.groupe}</strong></td>
+                    <td>$${b.montant.toLocaleString('fr-FR')}</td>
+                    <td>${b.taux}%</td>
+                    <td class="positive">$${b.retourGroupe.toLocaleString('fr-FR')}</td>
+                    <td class="positive">$${b.gain.toLocaleString('fr-FR')}</td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="deleteBlanchiment(${b.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteBlanchiment(id) {
+            if (!can('deleteBlanchiment')) {
+                alert('❌ Vous n\'avez pas la permission de supprimer un blanchiment');
+                return;
+            }
+            if (confirm('Êtes-vous sûr ?')) {
+                let blanchiments = getFromStorage(STORAGE_KEYS.blanchiment);
+                blanchiments = blanchiments.filter(b => b.id !== id);
+                saveToStorage(STORAGE_KEYS.blanchiment, blanchiments);
+                updateDashboard();
+                renderBlanchiment();
+            }
+        }
+
+        function addArme(event) {
+            event.preventDefault();
+            if (!can('addArme')) {
+                alert('❌ Vous n\'avez pas la permission d\'ajouter une arme');
+                return;
+            }
+            const arme = {
+                id: Date.now(),
+                nom: document.getElementById('armeName').value,
+                serie: document.getElementById('armeSerie').value,
+                achat: parseFloat(document.getElementById('armeAchat').value),
+                vente: parseFloat(document.getElementById('armeVente').value),
+                proprietaire: document.getElementById('armeProprietaire').value,
+                statut: document.getElementById('armeStatut').value,
+                notes: document.getElementById('armeNotes').value
+            };
+
+            const armes = getFromStorage(STORAGE_KEYS.armes);
+            armes.push(arme);
+            saveToStorage(STORAGE_KEYS.armes, armes);
+
+            event.target.reset();
+            renderArmes();
+            alert('✅ Arme ajoutée !');
+        }
+
+        function renderArmes() {
+            const armes = getFromStorage(STORAGE_KEYS.armes);
+            const tbody = document.getElementById('armesTable');
+            
+            if (armes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--color-text-secondary);">Aucune arme</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = armes.slice(-30).map(a => `
+                <tr>
+                    <td><strong>${a.nom}</strong></td>
+                    <td style="font-size: 0.85em;">${a.serie}</td>
+                    <td>$${a.achat.toLocaleString('fr-FR')}</td>
+                    <td>$${a.vente.toLocaleString('fr-FR')}</td>
+                    <td class="positive">$${(a.vente - a.achat).toLocaleString('fr-FR')}</td>
+                    <td>${a.proprietaire}</td>
+                    <td>${a.statut}</td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="deleteArme(${a.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteArme(id) {
+            if (!can('deleteArme')) {
+                alert('❌ Vous n\'avez pas la permission de supprimer une arme');
+                return;
+            }
+            if (confirm('Êtes-vous sûr ?')) {
+                let armes = getFromStorage(STORAGE_KEYS.armes);
+                armes = armes.filter(a => a.id !== id);
+                saveToStorage(STORAGE_KEYS.armes, armes);
+                renderArmes();
+            }
+        }
+
+        function addContact(event) {
+            event.preventDefault();
+            if (!can('addContact')) {
+                alert('❌ Vous n\'avez pas la permission d\'ajouter un contact');
+                return;
+            }
+            const contact = {
+                id: Date.now(),
+                nom: document.getElementById('contactNom').value,
+                tel: document.getElementById('contactTel').value,
+                org: document.getElementById('contactOrg').value,
+                poste: document.getElementById('contactPoste').value,
+                notes: document.getElementById('contactNotes').value
+            };
+
+            const contacts = getFromStorage(STORAGE_KEYS.contacts);
+            contacts.push(contact);
+            saveToStorage(STORAGE_KEYS.contacts, contacts);
+
+            event.target.reset();
+            renderContacts();
+            alert('✅ Contact ajouté !');
+        }
+
+        function renderContacts() {
+            const contacts = getFromStorage(STORAGE_KEYS.contacts);
+            const tbody = document.getElementById('contactsTable');
+            
+            if (contacts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--color-text-secondary);">Aucun contact</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = contacts.map(c => `
+                <tr>
+                    <td><strong>${c.nom}</strong></td>
+                    <td>${c.tel}</td>
+                    <td>${c.org || '-'}</td>
+                    <td>${c.poste || '-'}</td>
+                    <td style="font-size: 0.9em;">${c.notes || '-'}</td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="deleteContact(${c.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterContacts() {
+            const searchText = document.getElementById('contactFilter').value.toLowerCase();
+            const contacts = getFromStorage(STORAGE_KEYS.contacts);
+            
+            const filtered = contacts.filter(c => {
+                return c.nom.toLowerCase().includes(searchText) ||
+                       c.org.toLowerCase().includes(searchText) ||
+                       c.poste.toLowerCase().includes(searchText);
+            });
+
+            const tbody = document.getElementById('contactsTable');
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--color-text-secondary);">Aucun résultat</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(c => `
+                <tr>
+                    <td><strong>${c.nom}</strong></td>
+                    <td>${c.tel}</td>
+                    <td>${c.org || '-'}</td>
+                    <td>${c.poste || '-'}</td>
+                    <td style="font-size: 0.9em;">${c.notes || '-'}</td>
+                    <td>
+                        <button class="action-btn delete-btn" onclick="deleteContact(${c.id})">Supprimer</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteContact(id) {
+            if (!can('deleteContact')) {
+                alert('❌ Vous n\'avez pas la permission de supprimer un contact');
+                return;
+            }
+            if (confirm('Êtes-vous sûr ?')) {
+                let contacts = getFromStorage(STORAGE_KEYS.contacts);
+                contacts = contacts.filter(c => c.id !== id);
+                saveToStorage(STORAGE_KEYS.contacts, contacts);
+                renderContacts();
+            }
+        }
+
+        function updateDashboard() {
+            const transactions = getFromStorage(STORAGE_KEYS.transactions);
+            const blanchiments = getFromStorage(STORAGE_KEYS.blanchiment);
+
+            // Calcul des soldes
+            let saldoCC = 0;
+            let saldoCN = 0;
+
+            transactions.forEach(t => {
+                const montant = t.montant;
+                if (t.type === 'entree') {
+                    saldoCC += montant;
+                } else {
+                    saldoCC -= montant;
+                }
+            });
+
+            blanchiments.forEach(b => {
+                saldoCC += b.gainCC;
+                saldoCN += b.gainCN;
+            });
+
+            document.getElementById('saldoCC').textContent = `$${saldoCC.toLocaleString('fr-FR')}`;
+            document.getElementById('saldoCN').textContent = `$${saldoCN.toLocaleString('fr-FR')}`;
+            document.getElementById('saldoTotal').textContent = `$${(saldoCC + saldoCN).toLocaleString('fr-FR')}`;
+
+            // Top groupes
+            const groupStats = {};
+            blanchiments.forEach(b => {
+                if (!groupStats[b.groupe]) {
+                    groupStats[b.groupe] = { count: 0, confie: 0, rendu: 0, gain: 0 };
+                }
+                groupStats[b.groupe].count += 1;
+                groupStats[b.groupe].confie += b.montant;
+                groupStats[b.groupe].rendu += b.retourGroupe;
+                groupStats[b.groupe].gain += b.gain;
+            });
+
+            const topGroups = Object.entries(groupStats)
+                .sort((a, b) => b[1].gain - a[1].gain)
+                .slice(0, 5);
+
+            const topGroupsTable = document.getElementById('topGroupsTable');
+            if (topGroups.length === 0) {
+                topGroupsTable.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--color-text-secondary);">Aucune donnée</td></tr>';
+            } else {
+                topGroupsTable.innerHTML = topGroups.map(([groupe, stats]) => `
+                    <tr>
+                        <td><strong>${groupe}</strong></td>
+                        <td>${stats.count}</td>
+                        <td>$${stats.confie.toLocaleString('fr-FR')}</td>
+                        <td>$${stats.rendu.toLocaleString('fr-FR')}</td>
+                        <td class="positive">$${stats.gain.toLocaleString('fr-FR')}</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Dernières transactions
+            const lastTransactions = transactions.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            const lastTransactionsTable = document.getElementById('lastTransactionsTable');
+            if (lastTransactions.length === 0) {
+                lastTransactionsTable.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--color-text-secondary);">Aucune transaction</td></tr>';
+            } else {
+                lastTransactionsTable.innerHTML = lastTransactions.map(t => `
+                    <tr>
+                        <td>${t.date}</td>
+                        <td>${t.operateur}</td>
+                        <td>${t.raison}</td>
+                        <td class="${t.type === 'entree' ? 'positive' : 'negative'}">
+                            ${t.type === 'entree' ? '+' : '-'}$${t.montant.toLocaleString('fr-FR')}
+                        </td>
+                        <td>${t.type === 'entree' ? '📥' : '📤'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            renderJournal();
+            renderBlanchiment();
+            renderArmes();
+            renderContacts();
+        }
+
+        // Initialisation au chargement
+        updateDashboard();
+    </script>
+</body>
+</html>
